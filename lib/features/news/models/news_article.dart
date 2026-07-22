@@ -37,6 +37,12 @@ abstract class NewsArticle with _$NewsArticle {
     @Default(false) bool duplicate,
   }) = _NewsArticle;
 
+  /// 列表頁使用的摘要文字，優先取 description，否則取 sourceName。
+  String get summaryText =>
+      (description != null && description!.isNotEmpty)
+          ? description!
+          : sourceName;
+
   factory NewsArticle.fromJson(Map<String, dynamic> json) =>
       _$NewsArticleFromJson(json);
 }
