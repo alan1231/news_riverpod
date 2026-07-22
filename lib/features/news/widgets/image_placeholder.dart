@@ -9,7 +9,7 @@ class ImagePlaceholder extends StatelessWidget {
     required this.height,
     this.borderRadius = const BorderRadius.all(Radius.circular(8)),
     this.showIcon = false,
-    this.shimmerTimeout = const Duration(seconds: 5),
+    this.shimmerTimeout = const Duration(seconds: 10),
   });
 
   final double height;
