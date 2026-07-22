@@ -1,23 +1,23 @@
 import 'package:dio/dio.dart';
 
-/// Dio 工厂：
-/// 统一创建 HTTP 客户端，集中管理超时、基础地址与默认请求头。
+/// Dio 工廠：
+/// 統一建立 HTTP 客戶端，集中管理逾時、基礎位址與預設請求標頭。
 class DioClient {
   const DioClient._();
 
-  /// API 根地址，所有请求 path 都会拼接在该地址之后。
+  /// API 根位址，所有請求 path 都會拼接在該位址之後。
   static const baseUrl = 'https://newsdata.io';
 
-  /// 创建一个具备默认网络配置的 Dio 实例。
+  /// 建立一個具備預設網路設定的 Dio 實例。
   static Dio create() {
     return Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        // 连接超时：建立 TCP/SSL 连接的最长等待时间。
+        // 連線逾時：建立 TCP/SSL 連線的最長等待時間。
         connectTimeout: const Duration(seconds: 10),
-        // 接收超时：服务端返回数据的最长等待时间。
+        // 接收逾時：伺服器回傳資料的最長等待時間。
         receiveTimeout: const Duration(seconds: 30),
-        // 发送超时：上传请求体的最长等待时间。
+        // 傳送逾時：上傳請求本文的最長等待時間。
         sendTimeout: const Duration(seconds: 30),
         responseType: ResponseType.json,
         contentType: Headers.jsonContentType,

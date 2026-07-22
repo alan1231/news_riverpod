@@ -13,9 +13,9 @@ void main() {
           'results': [
             {
               'article_id': 'abc123',
-              'title': 'AI 新闻',
-              'description': '新闻摘要',
-              'source_name': '课程新闻',
+              'title': 'AI 新聞',
+              'description': '新聞摘要',
+              'source_name': '課程新聞',
               'pubDate': '2026-04-29 18:52:32',
             },
           ],
@@ -26,7 +26,38 @@ void main() {
 
       expect(page.nextPage, 'next-token');
       expect(page.articles.single.articleId, 'abc123');
-      expect(page.articles.single.title, 'AI 新闻');
+      expect(page.articles.single.title, 'AI 新聞');
+    });
+
+    test('sends expected filters without excludecountry', () async {
+      late Map<String, dynamic> capturedQueryParameters;
+
+      final dio = Dio(BaseOptions(baseUrl: 'https://example.test'));
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            capturedQueryParameters = Map<String, dynamic>.from(
+              options.queryParameters,
+            );
+            handler.resolve(
+              Response<Map<String, dynamic>>(
+                requestOptions: options,
+                statusCode: 200,
+                data: const {'status': 'success', 'results': []},
+              ),
+            );
+          },
+        ),
+      );
+
+      final api = NewsApi(dio);
+      await api.fetchLatest();
+
+      expect(capturedQueryParameters['country'], 'hk,tw,us,gb');
+      expect(capturedQueryParameters['category'], 'technology');
+      expect(capturedQueryParameters['language'], 'zh,en');
+      expect(capturedQueryParameters['removeduplicate'], 1);
+      expect(capturedQueryParameters.containsKey('excludecountry'), isFalse);
     });
 
     test('maps DioException to readable network error', () async {
@@ -34,7 +65,7 @@ void main() {
       dio.interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) {
-            // 用拦截器模拟超时，不访问真实网络。
+            // 用攔截器模擬逾時，不存取真實網路。
             handler.reject(
               DioException(
                 requestOptions: options,
@@ -52,7 +83,7 @@ void main() {
           isA<ApiException>().having(
             (error) => error.message,
             'message',
-            '网络超时，请稍后重试',
+            '網路逾時，請稍後重試',
           ),
         ),
       );
@@ -65,7 +96,7 @@ Dio _dioWithResponse(Map<String, dynamic> body) {
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) {
-        // 直接返回假响应，让测试稳定、快速、不依赖外网。
+        // 直接回傳假回應，讓測試穩定、快速、不依賴外網。
         handler.resolve(
           Response<Map<String, dynamic>>(
             requestOptions: options,

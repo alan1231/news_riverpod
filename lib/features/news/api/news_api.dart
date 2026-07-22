@@ -5,17 +5,17 @@ import '../../../core/network/error_mapper.dart';
 import '../models/news_article.dart';
 import '../models/news_page.dart';
 
-/// 新闻接口访问层：负责把远端 JSON 转成应用内可用的数据模型。
+/// 新聞介面存取層：負責把遠端 JSON 轉成應用內可用的資料模型。
 class NewsApi {
   NewsApi(this._dio);
 
-  /// 统一接口地址，域名来自第 4 课的 DioClient.baseUrl。
+  /// 統一介面位址，網域來自第 4 課的 DioClient.baseUrl。
   static const _endpoint = '/api/1/latest';
 
-  /// 本地兜底 Key，便于课程演示直接运行。
+  /// 本機兜底 Key，方便課程示範直接執行。
   static const _fallbackApiKey = 'pub_a7900fe467a4425bb7788db3ca695246';
 
-  /// 优先读取编译期环境变量，未提供时回落到兜底值。
+  /// 優先讀取編譯期環境變數，未提供時回落到兜底值。
   static const _apiKey = String.fromEnvironment(
     'NEWSDATA_API_KEY',
     defaultValue: _fallbackApiKey,
@@ -29,7 +29,7 @@ class NewsApi {
     String? page,
   }) async {
     try {
-      // 组装查询参数并请求 Newsdata 最新新闻接口。
+      // 組裝查詢參數並請求 Newsdata 最新新聞介面。
       final response = await _dio.get<Map<String, dynamic>>(
         _endpoint,
         queryParameters: _queryParameters(
@@ -42,7 +42,7 @@ class NewsApi {
       _ensureSuccess(body);
 
       final results = body['results'];
-      // 只保留结构正确且 article_id 不为空的文章，避免脏数据进入 UI。
+      // 只保留結構正確且 article_id 不為空的文章，避免髒資料進入 UI。
       final articles = results is List
           ? results
                 .whereType<Map<String, dynamic>>()
@@ -56,7 +56,7 @@ class NewsApi {
         nextPage: body['nextPage'] as String?,
       );
     } catch (error) {
-      // 统一把 DioException 和业务异常转成 ApiException。
+      // 統一把 DioException 和業務異常轉成 ApiException。
       throw mapNetworkError(error);
     }
   }
@@ -71,14 +71,14 @@ class NewsApi {
       _ensureSuccess(body);
 
       final results = body['results'];
-      // 详情接口理论上返回单条结果，这里做边界保护。
+      // 詳情介面理論上回傳單筆結果，這裡做邊界保護。
       if (results is! List || results.isEmpty) {
-        throw const ApiException('没有找到这篇新闻');
+        throw const ApiException('沒有找到這篇新聞');
       }
 
       final first = results.first;
       if (first is! Map<String, dynamic>) {
-        throw const ApiException('新闻详情格式异常');
+        throw const ApiException('新聞詳情格式異常');
       }
 
       return NewsArticle.fromJson(first);
@@ -92,11 +92,11 @@ class NewsApi {
     required String category,
     String? page,
   }) {
-    // 统一维护查询参数，避免调用方散落拼装逻辑。
+    // 統一維護查詢參數，避免呼叫端零散拼裝邏輯。
     final params = <String, dynamic>{
       'apikey': _apiKey,
       'q': query,
-      'country': 'cn,hk',
+      'country': 'hk,tw,us,gb',
       'category': category,
       'language': 'zh,en',
       'removeduplicate': 1,
@@ -112,8 +112,8 @@ class NewsApi {
       return;
     }
 
-    // 服务端失败时优先透传后端消息，便于页面展示可读错误。
-    final message = body['results'] ?? body['message'] ?? '新闻服务返回异常';
+    // 伺服器失敗時優先透傳後端訊息，方便頁面展示可讀錯誤。
+    final message = body['results'] ?? body['message'] ?? '新聞服務回傳異常';
     throw ApiException(message.toString());
   }
 }

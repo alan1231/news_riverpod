@@ -1,13 +1,13 @@
-/// 集中管理路由路径，避免页面里到处手写字符串。
+/// 集中管理路由路徑，避免頁面裡到處手寫字串。
 class AppRoutes {
   const AppRoutes._();
 
-  /// 新闻列表页真实路径。
+  /// 新聞列表頁真實路徑。
   static const news = '/news';
 
-  /// 新闻详情页路由模板，`:id` 是路径参数占位符。
+  /// 新聞詳情頁路由樣板，`:id` 是路徑參數佔位符。
   static const newsDetail = '/news/:id';
 
-  /// 根据新闻 id 生成真正用于跳转的路径。
+  /// 根據新聞 id 生成真正用於跳轉的路徑。
   static String newsDetailPath(String id) => '/news/$id';
 }

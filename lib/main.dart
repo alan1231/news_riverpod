@@ -8,13 +8,13 @@ void main() {
   runApp(const ProviderScope(child: NewsApp()));
 }
 
-/// 应用根组件，负责挂载主题和路由。
+/// 應用根元件，負責掛載主題與路由。
 class NewsApp extends ConsumerWidget {
   const NewsApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 从 Riverpod 读取 GoRouter 对象。
+    // 從 Riverpod 讀取 GoRouter 物件。
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
@@ -24,7 +24,7 @@ class NewsApp extends ConsumerWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff2563eb)),
         useMaterial3: true,
       ),
-      // 把 go_router 交给 MaterialApp.router 管理导航。
+      // 將 go_router 交給 MaterialApp.router 管理導覽。
       routerConfig: router,
     );
   }

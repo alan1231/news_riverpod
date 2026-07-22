@@ -9,7 +9,7 @@ import '../models/news_page.dart';
 part 'news_api_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-/// 注入 NewsApi 单例，供列表与详情 Provider 复用。
+/// 注入 NewsApi 單例，供列表與詳情 Provider 共用。
 NewsApi newsApi(Ref ref) {
   return NewsApi(ref.watch(dioProvider));
 }

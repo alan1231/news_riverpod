@@ -5,10 +5,12 @@ import 'news_api_provider.dart';
 
 part 'news_list_provider.g.dart';
 
-/// 可选新闻分类，供列表页分类条渲染。
+/// 可選新聞分類，供列表頁分類條渲染。
 const newsCategories = <String>[
   'technology',
+  'tourism',
   'business',
+  'crime',
   'science',
   'health',
   'sports',
@@ -16,8 +18,8 @@ const newsCategories = <String>[
   'world',
 ];
 
-@riverpod
-/// 列表状态控制器：管理分类切换、刷新与列表请求。
+@Riverpod(dependencies: [newsApi])
+/// 列表狀態控制器：管理分類切換、刷新與列表請求。
 class NewsList extends _$NewsList {
   final String _query = 'ai';
   String _category = 'technology';
@@ -27,15 +29,35 @@ class NewsList extends _$NewsList {
     return _load();
   }
 
+  Future<void> refresh() async {
+    // 顯式切到 loading，提升互動可感知性。
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(_load);
+  }
+
+  Future<void> selectCategory(String category) async {
+    // 相同分類不重複請求，減少無效網路呼叫。
+    if (_category == category) {
+      return;
+    }
+
+    _category = category;
+    await refresh();
+  }
+
   Future<List<NewsArticle>> _load() async {
-    // 可扩展：后续若接入分页，可在这里返回合并后的列表。
+    // 可擴充：後續若接入分頁，可在這裡回傳合併後的列表。
     final page = await ref
         .read(newsApiProvider)
         .fetchLatest(query: _query, category: _category);
     return page.articles;
   }
+}
 
-  Future<void> refresh() async {
-    state = await AsyncValue.guard(() => _load());
-  }
+@Riverpod(dependencies: [NewsList])
+/// 目前選中的新聞分類：給 UI 讀取高亮狀態，避免直接暴露 Notifier getter。
+String selectedNewsCategory(Ref ref) {
+  // 訂閱列表狀態，分類切換觸發 refresh 後這裡會同步重算。
+  ref.watch(newsListProvider);
+  return ref.read(newsListProvider.notifier)._category;
 }

@@ -1,13 +1,13 @@
-/// 统一的接口异常类型：
-/// - message：给 UI 层展示的可读错误信息
-/// - statusCode：可选 HTTP 状态码，方便后续做分支处理
+/// 統一的介面異常類型：
+/// - message：給 UI 層展示的可讀錯誤資訊
+/// - statusCode：可選 HTTP 狀態碼，方便後續做分支處理
 class ApiException implements Exception {
   const ApiException(this.message, {this.statusCode});
 
   final String message;
   final int? statusCode;
 
-  /// 打印异常时直接输出用户可读文案。
+  /// 列印異常時直接輸出使用者可讀文案。
   @override
   String toString() => message;
 }

@@ -24,9 +24,13 @@ final class NewsListProvider
         retry: null,
         name: r'newsListProvider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[newsApiProvider],
+        $allTransitiveDependencies: <ProviderOrFamily>[
+          NewsListProvider.$allTransitiveDependencies0,
+        ],
       );
+
+  static final $allTransitiveDependencies0 = newsApiProvider;
 
   @override
   String debugGetCreateSourceHash() => _$newsListHash();
@@ -36,7 +40,7 @@ final class NewsListProvider
   NewsList create() => NewsList();
 }
 
-String _$newsListHash() => r'a84c51dd17b8c8e3ffb499d6a9b3f36690b63dec';
+String _$newsListHash() => r'baab7a999af7c80efc2a68ac1c429bc174749f1d';
 
 /// 列表状态控制器：管理分类切换、刷新与列表请求。
 
@@ -58,3 +62,57 @@ abstract class _$NewsList extends $AsyncNotifier<List<NewsArticle>> {
     return element.handleCreate(ref, build);
   }
 }
+
+/// 当前选中的新闻分类：给 UI 读取高亮状态，避免直接暴露 Notifier getter。
+
+@ProviderFor(selectedNewsCategory)
+final selectedNewsCategoryProvider = SelectedNewsCategoryProvider._();
+
+/// 当前选中的新闻分类：给 UI 读取高亮状态，避免直接暴露 Notifier getter。
+
+final class SelectedNewsCategoryProvider
+    extends $FunctionalProvider<String, String, String>
+    with $Provider<String> {
+  /// 当前选中的新闻分类：给 UI 读取高亮状态，避免直接暴露 Notifier getter。
+  SelectedNewsCategoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'selectedNewsCategoryProvider',
+        isAutoDispose: true,
+        dependencies: <ProviderOrFamily>[newsListProvider],
+        $allTransitiveDependencies: <ProviderOrFamily>[
+          SelectedNewsCategoryProvider.$allTransitiveDependencies0,
+          SelectedNewsCategoryProvider.$allTransitiveDependencies1,
+        ],
+      );
+
+  static final $allTransitiveDependencies0 = newsListProvider;
+  static final $allTransitiveDependencies1 =
+      NewsListProvider.$allTransitiveDependencies0;
+
+  @override
+  String debugGetCreateSourceHash() => _$selectedNewsCategoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return selectedNewsCategory(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+}
+
+String _$selectedNewsCategoryHash() =>
+    r'2511211e39a897caee612c8a69b04816f3b1c654';
